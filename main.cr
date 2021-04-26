@@ -1,3 +1,5 @@
+require "json"
+
 alias MultiString=String?|Array(String)
 alias Nint32=Int32?
 
@@ -25,13 +27,23 @@ struct Name
     property first, last, suffix, prefix, middle, nick
     def initialize(
         @first : String,
-        @last : MultiString|StaticArray(String,2),
+        @last : MultiString,
         @suffix : MultiString|Int32|Array(Int32|String),
         @prefix : MultiString,
         @middle : MultiString,
         @nick : MultiString
     )
-    end
+end
+def dict
+return {
+    first: @first,
+    last: @last,
+    suffix: @suffix,
+    prefix: @prefix,
+    middle: @middle,
+    nick: @nick
+}
+end
 end
 
 struct Birthday
@@ -42,6 +54,13 @@ struct Birthday
         @year : Nint32
     )
     end
+def dict
+return {
+    month: @month,
+    day: @day,
+    year: @year
+}
+end
 end
 
 struct Age
@@ -52,6 +71,13 @@ struct Age
         @alive : Bool
     )
     end
+def dict
+return {
+    age: @age,
+    birthday: @birthday.dict,
+    alive: @alive
+}
+end
 end
 
 struct XP
@@ -61,6 +87,12 @@ struct XP
         @total : UInt128
     )
     end
+def dict
+return {
+    current: @current,
+    total: @total
+}
+end
 end
 
 struct Level
@@ -70,15 +102,27 @@ struct Level
         @xp : XP
     )
     end
+def dict
+return {
+    level: @level,
+    xp: @xp.dict
+}
+end
 end
 
 struct Race
     property name, bloodline
     def initialize(
         @name : String?,
-        @bloodline : BloodLine?
+        @bloodline : BloodLine
     )
     end
+def dict
+return {
+    name: @name,
+    bloodline: @bloodline.to_s
+}
+end
 end
 
 struct Person
@@ -92,10 +136,20 @@ struct Person
         @level : Level,
     )
     end
+def dict
+return {
+    name: @name.dict,
+    age: @age.dict,
+    bio: @bio,
+    race: @race.dict,
+    sex: @sex,
+    level: @level.dict
+}
+end
 end
 
 x=Person.new(
-    name: Name.new(
+    name: .new(
         first: "john",
         last: "doe",
         suffix: [
@@ -164,10 +218,15 @@ l=[
     x.level.xp.total
 ]
 
-puts div
+hush=true
 
+if !hush
+puts div
 l.each do |i|
     puts i
 end
-
 puts div+"\nDone!!!\n"+div
+else
+puts x.dict.to_pretty_json()
+puts "\nDone!!!"
+end
