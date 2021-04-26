@@ -1,0 +1,5 @@
+#!/bin/bash
+rm -f ./main
+crystal build /root/cr/main.cr -o ./main||exit 1
+clear
+./main
