@@ -149,7 +149,7 @@ end
 end
 
 x=Person.new(
-    name: .new(
+    name: name.new(
         first: "john",
         last: "doe",
         suffix: [
