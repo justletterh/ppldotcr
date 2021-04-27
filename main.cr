@@ -2,6 +2,7 @@ require "json"
 
 alias MultiString=String?|Array(String)
 alias Nint32=Int32?
+alias Nint64=Int64?
 
 div="-"*`tput cols`.to_i64
 
@@ -121,6 +122,25 @@ def dict
 return {
     name: @name,
     bloodline: @bloodline.to_s
+}
+end
+end
+
+struct Ref
+property name, id, rel, alive
+def initialize(
+    @name : Name,
+    @id : Nint64,
+    @rel : MultiString,
+    @alive : bool?
+)
+end
+def dict
+return {
+    name: @name.dict,
+    alive: @alive,
+    id: @id,
+    rel: @rel
 }
 end
 end
