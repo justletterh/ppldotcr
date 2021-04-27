@@ -3,6 +3,7 @@ require "json"
 alias MultiString=String?|Array(String)
 alias Nint32=Int32?
 alias Nint64=Int64?
+alias Nint=Int64?|Int32
 
 div="-"*`tput cols`.to_i64
 
@@ -22,6 +23,16 @@ enum BloodLine
     Mixed
     Unknown
     Other
+end
+
+@[Flags]
+enum Rel
+Mother
+Father
+Sister
+Brother
+Sibling
+Parent
 end
 
 struct Name
@@ -130,9 +141,9 @@ struct Ref
 property name, id, rel, alive
 def initialize(
     @name : Name,
-    @id : Nint64,
-    @rel : MultiString,
-    @alive : bool?
+    @id : Nint64|Int32,
+    @rel : MultiString|Rel|Array(Rel)|Array(Rel|String),
+    @alive : Bool?
 )
 end
 def dict
@@ -145,8 +156,27 @@ return {
 end
 end
 
+struct Family
+property items
+def initialize(
+    @items : Array(Ref)
+)
+end
+def dict
+l=[@items[0].dict]
+if @items.size>=2
+ll=@items
+ll.delete_at(0)
+ll.each do |i|
+l << i.dict
+end
+end
+return l
+end
+end
+
 struct Person
-    property name, age, bio, race, sex, level
+    property name, age, bio, race, sex, level, family, id
     def initialize(
         @name : Name,
         @age : Age,
@@ -154,16 +184,20 @@ struct Person
         @race : Race,
         @sex : MultiString|Array(Sex|String)|Sex|Array(Sex),
         @level : Level,
+        @family : Family,
+        @id : Nint
     )
     end
 def dict
 return {
     name: @name.dict,
+    id: @id,
     age: @age.dict,
     bio: @bio,
     race: @race.dict,
     sex: @sex,
-    level: @level.dict
+    level: @level.dict,
+    family: @family.dict
 }
 end
 end
@@ -183,6 +217,7 @@ x=Person.new(
             "h"
         ]
     ),
+    id: 8008,
     age: Age.new(
         age: 69,
         birthday: Birthday.new(
@@ -207,6 +242,23 @@ x=Person.new(
             current: UInt128.new(420),
             total: UInt128.new(69)
         )
+    ),
+    family: Family.new(
+        items: [
+            Ref.new(
+                name: Name.new(
+                    first: "j",
+                    last: "jones",
+                    middle: nil,
+                    prefix: nil,
+                    suffix: nil,
+                    nick: "j"
+                ),
+                alive: true,
+                id: 0,
+                rel: Rel::Mother
+            )
+        ]
     )
 )
 
