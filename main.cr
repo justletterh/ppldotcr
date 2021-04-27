@@ -163,15 +163,15 @@ def initialize(
 )
 end
 def dict
-l=[@items[0].dict]
-if @items.size>=2
-ll=@items
-ll.delete_at(0)
-ll.each do |i|
-l << i.dict
-end
-end
-return l
+    l=[@items[0].dict]
+    if @items.size>=2
+        ll=@items
+        ll.delete_at(0)
+        ll.each do |i|
+            l << i.dict
+        end
+    end
+    return l
 end
 end
 
@@ -255,7 +255,7 @@ x=Person.new(
                     nick: "j"
                 ),
                 alive: true,
-                id: 0,
+                id: nil,
                 rel: Rel::Mother
             )
         ]
@@ -293,12 +293,12 @@ l=[
 hush=true
 
 if !hush
-puts div
-l.each do |i|
-    puts i
-end
-puts div+"\nDone!!!\n"+div
+    puts div
+    l.each do |i|
+        puts i
+    end
+    puts div+"\nDone!!!\n"+div
 else
-puts x.dict.to_pretty_json()
-puts "\nDone!!!"
+    puts x.dict.to_pretty_json()
+    puts "\nDone!!!"
 end
